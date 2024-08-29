@@ -18,5 +18,6 @@ async function getUserProjects(req, res) {
     data: projects,
   });
 }
+
 module.exports.getUsers = getUsers;
 module.exports.getUserProjects = getUserProjects;
