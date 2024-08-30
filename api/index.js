@@ -23,7 +23,7 @@ app.use(
     }),
     cookie: {
       httpOnly: true,
-      maxAge: 3600 * 24,
+      maxAge: 1000 * 3600 * 24, // 1000ms => 1s * 3600 => 1 hour * 24 => 1 day
     },
   })
 );
