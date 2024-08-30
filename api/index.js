@@ -16,10 +16,11 @@ app.use(express.json());
 app.use(
   session({
     secret: "somethingtopsecret",
+    resave: false,
+    saveUninitialized: false,
     store: new MongoStore({
       client: mongoose.connection.getClient(),
     }),
-    resave: false,
     cookie: {
       httpOnly: true,
       maxAge: 3600 * 24,
