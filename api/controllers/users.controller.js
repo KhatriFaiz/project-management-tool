@@ -11,7 +11,9 @@ async function getUserProjects(req, res) {
 
   const projects = await Project.find({
     "members.member": userID,
-  });
+  })
+    .populate("members.member", "name username email")
+    .populate("issueTypes");
 
   return res.send({
     success: true,
