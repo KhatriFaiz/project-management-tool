@@ -3,7 +3,9 @@ const IssueType = require("../models/IssueType.model");
 const Project = require("../models/Project.model");
 
 async function getProjects(req, res) {
-  const projects = await Project.find({}).populate("members.member");
+  const projects = await Project.find({})
+    .populate("members.member")
+    .populate("issueTypes");
   return res.send({ data: projects });
 }
 
