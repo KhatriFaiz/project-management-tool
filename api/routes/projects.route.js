@@ -28,7 +28,7 @@ router.post(
   createIssueType
 );
 
-router.use(
+router.post(
   "/:projectID/issues/:issueType",
   passport.authenticate("session"),
   handleUnauthorizedAccess,
