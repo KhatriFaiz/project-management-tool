@@ -12,13 +12,6 @@ const MemberSchema = new mongoose.Schema({
   },
 });
 
-const IssueTypeSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-});
-
 const ProjectSchema = new mongoose.Schema(
   {
     title: {
@@ -26,7 +19,7 @@ const ProjectSchema = new mongoose.Schema(
       required: true,
     },
     members: [MemberSchema],
-    issueTypes: [IssueTypeSchema],
+    issueTypes: [{ type: mongoose.Schema.Types.ObjectId, ref: "IssueType" }],
   },
   { timestamps: true }
 );

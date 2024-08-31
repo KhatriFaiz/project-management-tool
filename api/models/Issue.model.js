@@ -12,7 +12,6 @@ const IssueSchema = new mongoose.Schema(
     assignedTo: {
       type: mongoose.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     projectId: {
       type: mongoose.Types.ObjectId,
@@ -27,7 +26,7 @@ const IssueSchema = new mongoose.Schema(
     },
     type: {
       type: mongoose.Types.ObjectId,
-      ref: "Project.issueTypes",
+      ref: "IssueType",
       required: true,
     },
   },

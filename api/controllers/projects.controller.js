@@ -1,3 +1,5 @@
+const { Issue } = require("../models/Issue.model");
+const IssueType = require("../models/IssueType.model");
 const Project = require("../models/Project.model");
 
 async function getProjects(req, res) {
@@ -23,5 +25,69 @@ async function createProject(req, res) {
   }
 }
 
+async function createIssueType(req, res) {
+  try {
+    const newIssueType = new IssueType({
+      type: req.body.type,
+    });
+    if (req.body.title) newIssueType.title = req.body.title;
+    const issueType = await newIssueType.save();
+
+    req.project.issueTypes.push(newIssueType.id);
+    await req.project.save();
+
+    return res.send({
+      success: true,
+      data: issueType,
+    });
+  } catch (error) {
+    return res.send({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+}
+
+async function createIssue(req, res) {
+  const { issueType } = req.params;
+
+  try {
+    let issueTypeID;
+    const project = await req.project.populate("issueTypes");
+
+    const issueTypeExists = project.issueTypes.some((type) => {
+      if (type.type === issueType) {
+        issueTypeID = type.id;
+        return true;
+      }
+    });
+
+    if (!issueTypeExists) {
+      return res.status(404).send({
+        success: false,
+        message: "Couldn't find issueType",
+      });
+    }
+
+    const issue = new Issue({
+      title: req.body.title,
+      projectId: req.project.id,
+      type: issueTypeID,
+    });
+    const savedIssue = await issue.save();
+    return res.send({
+      success: true,
+      data: savedIssue,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+}
+
 module.exports.getProjects = getProjects;
 module.exports.createProject = createProject;
+module.exports.createIssueType = createIssueType;
+module.exports.createIssue = createIssue;
