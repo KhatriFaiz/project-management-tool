@@ -9,7 +9,7 @@ const IssueSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    assignedTo: {
+    assignee: {
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
