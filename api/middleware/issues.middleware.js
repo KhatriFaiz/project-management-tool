@@ -2,6 +2,7 @@ const Project = require("../models/Project.model");
 
 async function getProject(req, res, next) {
   const { projectID } = req.params;
+
   try {
     const project = await Project.findById(projectID);
     if (!project) {
