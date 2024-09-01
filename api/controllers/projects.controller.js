@@ -73,7 +73,7 @@ async function createIssue(req, res) {
 
     const issue = new Issue({
       title: req.body.title,
-      projectId: req.project.id,
+      project: req.project.id,
       type: issueTypeID,
     });
     const savedIssue = await issue.save();
@@ -89,7 +89,26 @@ async function createIssue(req, res) {
   }
 }
 
+async function getProjectIssues(req, res) {
+  try {
+    const issues = await Issue.find({ project: req.project.id })
+      .populate("project", "title")
+      .populate("type", "type title");
+
+    return res.send({
+      success: true,
+      data: issues,
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message || "Something went wrong",
+    });
+  }
+}
+
 module.exports.getProjects = getProjects;
 module.exports.createProject = createProject;
 module.exports.createIssueType = createIssueType;
 module.exports.createIssue = createIssue;
+module.exports.getProjectIssues = getProjectIssues;

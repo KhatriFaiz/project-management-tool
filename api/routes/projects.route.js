@@ -4,6 +4,7 @@ const {
   getProjects,
   createProject,
   createIssueType,
+  getProjectIssues,
 } = require("../controllers/projects.controller");
 const { handleUnauthorizedAccess } = require("../middleware/auth.middleware");
 const { getProject } = require("../middleware/issues.middleware");
@@ -26,6 +27,14 @@ router.post(
   handleUnauthorizedAccess,
   getProject,
   createIssueType
+);
+
+router.get(
+  "/:projectID/issues",
+  passport.authenticate("session"),
+  handleUnauthorizedAccess,
+  getProject,
+  getProjectIssues
 );
 
 router.post(
