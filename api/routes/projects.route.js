@@ -14,35 +14,12 @@ const router = Router();
 
 router.get("/", getProjects);
 
-router.post(
-  "/",
-  passport.authenticate("session"),
-  handleUnauthorizedAccess,
-  createProject
-);
+router.use(passport.authenticate("session"), handleUnauthorizedAccess);
+router.post("/", createProject);
 
-router.post(
-  "/:projectID/issue-types",
-  passport.authenticate("session"),
-  handleUnauthorizedAccess,
-  getProject,
-  createIssueType
-);
-
-router.get(
-  "/:projectID/issues",
-  passport.authenticate("session"),
-  handleUnauthorizedAccess,
-  getProject,
-  getProjectIssues
-);
-
-router.post(
-  "/:projectID/issues/:issueType",
-  passport.authenticate("session"),
-  handleUnauthorizedAccess,
-  getProject,
-  createIssue
-);
+router.use(getProject);
+router.post("/:projectID/issue-types", createIssueType);
+router.get("/:projectID/issues", getProjectIssues);
+router.post("/:projectID/issues/:issueType", createIssue);
 
 module.exports = router;
