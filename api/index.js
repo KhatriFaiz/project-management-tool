@@ -6,12 +6,14 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
+const cors = require("cors");
 const { configurePassport } = require("./config/passport");
 
 const app = express();
 mongoose.connect("mongodb://127.0.0.1:27017/project_management");
 
 app.use(express.json());
+app.use(cors({ origin: ["http://localhost:3001"], credentials: true }));
 
 app.use(
   session({

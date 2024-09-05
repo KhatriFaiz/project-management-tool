@@ -16,29 +16,75 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { API_HOST } from "@/lib/contants";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+const LoginFormSchema = z.object({
+  username: z.string(),
+  password: z.string(),
+});
 
 const LoginForm = () => {
-  const form = useForm();
+  const form = useForm({
+    defaultValues: { username: "", password: "" },
+    resolver: zodResolver(LoginFormSchema),
+  });
+  const router = useRouter();
+
+  const handleSubmit = async (data) => {
+    const { username, password } = data;
+    try {
+      const response = await fetch(`${API_HOST}/auth/login/password`, {
+        method: "POST",
+        body: JSON.stringify({ username, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        mode: "cors",
+      });
+
+      if (response.status === 401) {
+        form.setError("root", { message: "Invalid username or password" });
+        return;
+      }
+
+      if (response.ok) {
+        router.push("/");
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Card className="w-full max-w-96">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
+        <CardTitle>Sign in</CardTitle>
         <CardDescription>Welcome back!</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            {form.formState.errors.root && (
+              <p className="text-red-600">
+                {form.formState.errors.root.message}
+              </p>
+            )}
             <div className="grid gap-2">
               <FormField
                 control={form.control}
-                name="email"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input type="email" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -57,7 +103,7 @@ const LoginForm = () => {
                   </FormItem>
                 )}
               />
-              <Button>Sign up</Button>
+              <Button>Log in</Button>
             </div>
           </form>
         </Form>

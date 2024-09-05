@@ -8,9 +8,7 @@ function configurePassport() {
       try {
         const user = await User.findOne({ username });
         if (!user) {
-          return cb(null, false, {
-            message: "Incorrect username or password.",
-          });
+          return cb(null, false);
         }
         if (user.password === password) return cb(null, user);
         return cb(null, false, {
