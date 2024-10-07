@@ -10,7 +10,11 @@ const app = express();
 const server = http.createServer(app);
 
 // Integrate socket.io
-const io = socketIO(server);
+const io = socketIO(server, {
+  cors: {
+    origin: "http://localhost:3000",
+  },
+});
 
 // Listen for new connections
 io.on("connection", (socket) => {
