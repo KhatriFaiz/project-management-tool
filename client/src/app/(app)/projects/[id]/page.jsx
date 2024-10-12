@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -7,46 +9,41 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
+import { useSocket } from "@/hooks/useSocket";
 import { Menu } from "lucide-react";
+import { socketEvents } from "../../../../../../common/utils/socketEvents";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const ProjectOverviewPage = () => {
+  const socket = useSocket();
+  const params = useParams();
+  const [project, setProject] = useState(null);
+  const projectId = params.id;
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit(
+        socketEvents.PROJECT.fetchProjectOverview,
+        { projectId },
+        (response) => {
+          if (response.success) {
+            setProject(response.project);
+          }
+        }
+      );
+    }
+  }, [socket]);
+
+  if (!project) {
+    return null;
+  }
+
   return (
-    <main>
-      <div className="max-w-screen-lg mx-auto">
-        <div className="py-10">
-          <h1 className="text-2xl font-semibold">The First Project</h1>
-        </div>
-        <section>
-          <h2 className="text-xl font-semibold mb-6">Project Members</h2>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Member</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Amit Patel</TableCell>
-                <TableCell className="flex justify-end">
-                  <Button variant="ghost" size="icon">
-                    <Menu />
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Jay Patel</TableCell>
-                <TableCell className="flex justify-end">
-                  <Button variant="ghost" size="icon">
-                    <Menu />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </section>
-      </div>
-    </main>
+    <div className="max-w-3xl mx-auto">
+      <h2 className="text-2xl mb-5 font-bold">Description</h2>
+      <p>{project.description}</p>
+    </div>
   );
 };
 

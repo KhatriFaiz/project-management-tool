@@ -5,11 +5,14 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
 import { useEffect, useState } from "react";
 import { socketEvents } from "../../../common/utils/socketEvents";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 const ProjectsGrid = ({ projects }) => {
   if (!projects || !projects.length) {
@@ -41,6 +44,11 @@ const ProjectsGrid = ({ projects }) => {
               <div className="text-sm font-medium">{project.progress}%</div>
             </div>
           </CardContent>
+          <CardFooter className="flex justify-end">
+            <Button variant="outline" asChild>
+              <Link href={`/projects/${project._id}`}>Open</Link>
+            </Button>
+          </CardFooter>
         </Card>
       ))}
     </div>
@@ -54,9 +62,7 @@ export const UserProjectsGrid = () => {
   useEffect(() => {
     if (socket) {
       socket.emit(socketEvents.PROJECT.fetchUserProjects, (response) => {
-        if (response.success) {
-          setProjects([...response.projects]);
-        }
+        if (response.success) setProjects([...response.projects]);
       });
     }
   }, [socket]);
