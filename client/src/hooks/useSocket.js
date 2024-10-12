@@ -1,20 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { SocketContext } from "@/components/providers/SocketProvider";
+import { useContext, useEffect } from "react";
 
-export const useSocket = (url) => {
-  const [socket, setSocket] = useState(null);
+export const useSocket = () => {
+  const socket = useContext(SocketContext);
 
-  useEffect(() => {
-    const socketIo = io(url);
-
-    setSocket(socketIo);
-
-    return () => {
-      socketIo.disconnect();
-    };
-  }, [url]);
+  useEffect(() => {}, [socket]);
 
   return socket;
 };

@@ -24,23 +24,23 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const LoginFormSchema = z.object({
-  username: z.string(),
+  email: z.string().email(),
   password: z.string(),
 });
 
 const LoginForm = () => {
   const form = useForm({
-    defaultValues: { username: "", password: "" },
+    defaultValues: { email: "", password: "" },
     resolver: zodResolver(LoginFormSchema),
   });
   const router = useRouter();
 
   const handleSubmit = async (data) => {
-    const { username, password } = data;
+    const { email, password } = data;
     try {
-      const response = await fetch(`${API_HOST}/auth/login/password`, {
+      const response = await fetch(`${API_HOST}/auth/login`, {
         method: "POST",
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ email, password }),
         headers: {
           "Content-Type": "application/json",
         },
@@ -49,11 +49,14 @@ const LoginForm = () => {
       });
 
       if (response.status === 401) {
-        form.setError("root", { message: "Invalid username or password" });
+        form.setError("root", { message: "Invalid email or password" });
         return;
       }
 
       if (response.ok) {
+        const { token } = await response.json();
+        // Save the token to local storage
+        localStorage.setItem("token", token);
         router.push("/");
         return;
       }
@@ -79,10 +82,10 @@ const LoginForm = () => {
             <div className="grid gap-2">
               <FormField
                 control={form.control}
-                name="username"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>email</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>

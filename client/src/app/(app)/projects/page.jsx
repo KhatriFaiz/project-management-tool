@@ -1,3 +1,6 @@
+"use client";
+
+import { UserProjectsGrid } from "@/components/ProjectsGrid";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -54,34 +57,12 @@ const ProjectsPage = () => {
       <div className="mb-6">
         <Button asChild>
           <Link href="/create-project">
-            <Plus className="mr-2 h-4 w-4" /> New Project
+            <Plus className="mr-2 h-4 w-4" />
+            New Project
           </Link>
         </Button>
       </div>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project) => (
-          <Card key={project.id}>
-            <CardHeader>
-              <CardTitle>{project.name}</CardTitle>
-              <CardDescription>{project.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">Progress</p>
-                  <div className="overflow-hidden rounded-full bg-secondary">
-                    <div
-                      className="h-2 rounded-full bg-primary"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
-                </div>
-                <div className="text-sm font-medium">{project.progress}%</div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <UserProjectsGrid />
     </main>
   );
 };
