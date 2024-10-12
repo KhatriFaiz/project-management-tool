@@ -10,11 +10,10 @@ import createUserWithEmailAndPassword from "./services/auth/createUserWithEmailA
 import authRouter from "./routes/authRouter.js";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import { projectListners } from "./listners/projectListners.js";
 
 // Import Models
-import Project from "./models/Project.model.js";
 import User from "./models/User.model.js";
-import { z } from "zod";
 
 // Our express app instance
 const app = express();
@@ -82,52 +81,7 @@ io.on("connection", (socket) => {
     socket.emit(socketEvents.AUTH.successfulLogin, user, token);
   });
 
-  socket.on(
-    socketEvents.PROJECT.createProject,
-    async (projectDetails, callback) => {
-      try {
-        projectDetails.members = [];
-        projectDetails.members.push({
-          member: socket.user.id,
-          projectManager: true,
-        });
-
-        const projectDetailsSchema = z.object({
-          title: z.string().min(3),
-          description: z.string().optional(),
-          members: z
-            .object({
-              member: z.string().length(24),
-              projectManager: z.boolean(),
-            })
-            .array(),
-        });
-
-        projectDetailsSchema.parse(projectDetails);
-
-        const project = new Project(projectDetails);
-        await project.save();
-
-        callback({
-          success: true,
-          project,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  );
-
-  socket.on(socketEvents.PROJECT.fetchUserProjects, async (callback) => {
-    const projects = await Project.find({
-      "members.member": socket.user._id,
-    });
-
-    callback({
-      success: true,
-      projects: [...projects],
-    });
-  });
+  projectListners(socket);
 });
 
 // Start the server

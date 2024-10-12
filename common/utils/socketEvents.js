@@ -7,5 +7,6 @@ export const socketEvents = {
   PROJECT: {
     createProject: "project:create",
     fetchUserProjects: "project:fetch_user_projects",
+    fetchProjectOverview: "project:fetch_overview",
   },
 };
