@@ -1,6 +1,15 @@
+import CreateTaskForm from "@/components/forms/CreateTaskForm";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -17,8 +26,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Calendar } from "lucide-react";
+import { Edit } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Search } from "lucide-react";
 import { ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 const tasks = [
   {
@@ -117,11 +129,29 @@ const ProjectTasksPage = () => {
           </DropdownMenu>
         </div>
         <div className="relative w-full sm:w-auto">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          {/* <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search tasks..."
             className="pl-8 w-full sm:w-[300px]"
-          />
+          /> */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> New Task
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Create New Task</DialogTitle>
+                <DialogDescription>
+                  Create New task for your project.{" "}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <CreateTaskForm />
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -134,6 +164,7 @@ const ProjectTasksPage = () => {
               <TableHead>Due Date</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -183,6 +214,13 @@ const ProjectTasksPage = () => {
                   >
                     {task.status}
                   </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <Button variant="ghost" size="icon" asChild>
+                    <Link href="#">
+                      <Edit className="h-4 w-4" />
+                    </Link>
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
